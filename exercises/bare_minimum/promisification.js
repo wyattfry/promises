@@ -8,31 +8,31 @@ var request = require('request');
 var crypto = require('crypto');
 var Promise = require('bluebird');
 
+exports = module.exports = {};
 // (1) Asyncronous HTTP request
 var getGitHubProfile = function(user, callback) {
   
-  return new Promise((resolve, reject) => {
-    var options = {
-      url: 'https://api.github.com/users/' + user,
-      headers: { 'User-Agent': 'request' },
-      json: true // will JSON.parse(body) for us
-    };
+  var options = {
+    url: 'https://api.github.com/users/' + user,
+    headers: { 'User-Agent': 'request' },
+    json: true  // will JSON.parse(body) for us
+  };
 
-    request.get(options, function(err, res, body) {
-      if (err) {
-        reject(err, null);
-      } else if (body.message) {
-        reject(new Error('Failed to get GitHub profile: ' + body.message), null);
-      } else {
-        resolve(null, body);
-      }
-    });
+  request.get(options, function(err, res, body) {
+    if (err) {
+      callback(err, null);
+    } else if (body.message) {
+      callback(new Error('Failed to get GitHub profile: ' + body.message), null);
+    } else {
+      callback(null, body);
+    }
   });
   
 };
 
-var getGitHubProfileAsync; // TODO
-
+exports.getGitHubProfileAsync = Promise.promisify(getGitHubProfile); // TODO
+exports.getGitHubProfileAsync()
+  .then(results => callback(data));
 
 // (2) Asyncronous token generation
 var generateRandomToken = function(callback) {
@@ -42,7 +42,7 @@ var generateRandomToken = function(callback) {
   });
 };
 
-var generateRandomTokenAsync; // TODO
+exports.generateRandomTokenAsync = Promise.promisify(generateRandomToken); // TODO
 
 
 // (3) Asyncronous file manipulation
@@ -60,11 +60,13 @@ var readFileAndMakeItFunny = function(filePath, callback) {
   });
 };
 
-var readFileAndMakeItFunnyAsync; // TODO
+exports.readFileAndMakeItFunnyAsync = Promise.promisify(readFileAndMakeItFunny); // TODO
+exports.readFileAndMakeItFunnyAsync()
+  .then(results => callback(results));
 
-// Export these functions so we can test them and reuse them in later exercises
-module.exports = {
-  getGitHubProfileAsync: getGitHubProfileAsync,
-  generateRandomTokenAsync: generateRandomTokenAsync,
-  readFileAndMakeItFunnyAsync: readFileAndMakeItFunnyAsync
-};
+// // Export these functions so we can test them and reuse them in later exercises
+// module.exports = {
+//   getGitHubProfileAsync: getGitHubProfileAsync,
+//   generateRandomTokenAsync: generateRandomTokenAsync,
+//   readFileAndMakeItFunnyAsync: readFileAndMakeItFunnyAsync
+// };
