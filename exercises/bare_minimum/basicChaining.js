@@ -10,14 +10,10 @@
 
 var fs = require('fs');
 var Promise = require('bluebird');
+exports = module.exports = {};
 
 
-
-var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
+exports.fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
   // TODO
 };
 
-// Export these functions so we can test them
-module.exports = {
-  fetchProfileAndWriteToFile: fetchProfileAndWriteToFile
-};
